@@ -3,11 +3,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.params.provider.MethodSource;
 
-public class TennisTest {
+class TennisTest {
 
-    public static Stream<Object[]> getAllScores() {
+    static Stream<Object[]> getAllScores() {
         return Stream.of(new Object[][]{
                 {0, 0, "Love-All"},
                 {1, 1, "Fifteen-All"},
@@ -63,42 +64,42 @@ public class TennisTest {
 
     @ParameterizedTest
     @MethodSource("getAllScores")
-    public void checkAllScoresTennisGame1(int player1Points, int player2Points, String expectedScore) {
+    void checkAllScoresTennisGame1(int player1Points, int player2Points, String expectedScore) {
         TennisGame game = new TennisGame1("player1", "player2");
         checkAllScores(player1Points, player2Points, expectedScore, game);
     }
 
     @ParameterizedTest
     @MethodSource("getAllScores")
-    public void checkAllScoresTennisGame2(int player1Points, int player2Points, String expectedScore) {
+    void checkAllScoresTennisGame2(int player1Points, int player2Points, String expectedScore) {
         TennisGame game = new TennisGame2("player1", "player2");
         checkAllScores(player1Points, player2Points, expectedScore, game);
     }
 
     @ParameterizedTest
     @MethodSource("getAllScores")
-    public void checkAllScoresTennisGame3(int player1Points, int player2Points, String expectedScore) {
+    void checkAllScoresTennisGame3(int player1Points, int player2Points, String expectedScore) {
         TennisGame game = new TennisGame3("player1", "player2");
         checkAllScores(player1Points, player2Points, expectedScore, game);
     }
 
     @ParameterizedTest
     @MethodSource("getAllScores")
-    public void checkAllScoresTennisGame4(int player1Points, int player2Points, String expectedScore) {
+    void checkAllScoresTennisGame4(int player1Points, int player2Points, String expectedScore) {
         TennisGame game = new TennisGame4("player1", "player2");
         checkAllScores(player1Points, player2Points, expectedScore, game);
     }
 
     @ParameterizedTest
     @MethodSource("getAllScores")
-    public void checkAllScoresTennisGame5(int player1Points, int player2Points, String expectedScore) {
+    void checkAllScoresTennisGame5(int player1Points, int player2Points, String expectedScore) {
         TennisGame game = new TennisGame5("player1", "player2");
         checkAllScores(player1Points, player2Points, expectedScore, game);
     }
 
     @ParameterizedTest
     @MethodSource("getAllScores")
-    public void checkAllScoresTennisGame6(int player1Points, int player2Points, String expectedScore) {
+    void checkAllScoresTennisGame6(int player1Points, int player2Points, String expectedScore) {
         TennisGame game = new TennisGame6("player1", "player2");
         checkAllScores(player1Points, player2Points, expectedScore, game);
     }
@@ -106,7 +107,7 @@ public class TennisTest {
 
     @ParameterizedTest
     @MethodSource("getAllScores")
-    public void checkAllScoresTennisGame7(int player1Points, int player2Points, String expectedScore) {
+    void checkAllScoresTennisGame7(int player1Points, int player2Points, String expectedScore) {
         TennisGame game = new TennisGame7("player1", "player2");
         checkAllScores(player1Points, player2Points, "Current score: " + expectedScore + ", enjoy your game!", game);
     }

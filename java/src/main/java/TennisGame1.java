@@ -1,76 +1,93 @@
 
 public class TennisGame1 implements TennisGame {
-    
-    private int m_score1 = 0;
-    private int m_score2 = 0;
-    private String player1Name;
-    private String player2Name;
 
-    public TennisGame1(String player1Name, String player2Name) {
-        this.player1Name = player1Name;
-        this.player2Name = player2Name;
+    private static final String ADVANTAGE = "Advantage";
+    private static final String WIN_FOR = "Win for";
+    private static final String ALL = "All";
+    private static final String SPACE = " ";
+    private static final String SEPARATOR = "-";
+    private static final int MINIMUM_WINNING_SCORE = 4;
+    private static final int SCORE_DIFFERENCE_FOR_WIN = 2;
+    private static final String DEUCE = "Deuce";
+
+    private final String playerOneName;
+    private final String playerTwoName;
+    private int scorePlayerOne = 0;
+    private int scorePlayerTwo = 0;
+
+    public TennisGame1(String playerOneName, String playerTwoName) {
+        this.playerOneName = playerOneName;
+        this.playerTwoName = playerTwoName;
     }
 
     public void wonPoint(String playerName) {
-        if (playerName == "player1")
-            m_score1 += 1;
-        else
-            m_score2 += 1;
+        if (playerName.equals(playerOneName)) {
+            scorePlayerOne += 1;
+        } else {
+            scorePlayerTwo += 1;
+        }
     }
 
     public String getScore() {
-        String score = "";
-        int tempScore=0;
-        if (m_score1==m_score2)
-        {
-            switch (m_score1)
-            {
-                case 0:
-                        score = "Love-All";
-                    break;
-                case 1:
-                        score = "Fifteen-All";
-                    break;
-                case 2:
-                        score = "Thirty-All";
-                    break;
-                default:
-                        score = "Deuce";
-                    break;
-                
-            }
+        if (playersHaveSameScore()) {
+            return computeSameScore();
         }
-        else if (m_score1>=4 || m_score2>=4)
-        {
-            int minusResult = m_score1-m_score2;
-            if (minusResult==1) score ="Advantage player1";
-            else if (minusResult ==-1) score ="Advantage player2";
-            else if (minusResult>=2) score = "Win for player1";
-            else score ="Win for player2";
+        else if (oneOfThePlayersHasScoreFourOrOver()) {
+            return computeAdvantageOrWin();
         }
-        else
-        {
-            for (int i=1; i<3; i++)
-            {
-                if (i==1) tempScore = m_score1;
-                else { score+="-"; tempScore = m_score2;}
-                switch(tempScore)
-                {
-                    case 0:
-                        score+="Love";
-                        break;
-                    case 1:
-                        score+="Fifteen";
-                        break;
-                    case 2:
-                        score+="Thirty";
-                        break;
-                    case 3:
-                        score+="Forty";
-                        break;
-                }
-            }
+
+        return basicScore();
+    }
+
+    private boolean playersHaveSameScore() {
+        return scorePlayerOne == scorePlayerTwo;
+    }
+
+    private boolean oneOfThePlayersHasScoreFourOrOver() {
+        return scorePlayerOne >= MINIMUM_WINNING_SCORE || scorePlayerTwo >= MINIMUM_WINNING_SCORE;
+    }
+
+    private String computeAdvantageOrWin() {
+        int minusResult = scorePlayerOne - scorePlayerTwo;
+        if (minusResult == 1) {
+            return advantageScore(playerOneName);
+        } else if (minusResult == -1) {
+            return advantageScore(playerTwoName);
+        } else if (minusResult >= SCORE_DIFFERENCE_FOR_WIN) {
+            return winningScore(playerOneName);
         }
-        return score;
+
+        return winningScore(playerTwoName);
+    }
+
+    private String advantageScore(String playerName) {
+        return ADVANTAGE + SPACE + playerName;
+    }
+
+    private String winningScore(String playerName) {
+        return WIN_FOR + SPACE + playerName;
+    }
+
+    private String basicScore() {
+        return computeBasicScorePart(scorePlayerOne) + SEPARATOR + computeBasicScorePart(scorePlayerTwo);
+    }
+
+    private static String computeBasicScorePart(int tempScore) {
+        return switch (tempScore) {
+            case 0 -> Score.LOVE.scorePart();
+            case 1 -> Score.FIFTEEN.scorePart();
+            case 2 -> Score.THIRTY.scorePart();
+            case 3 -> Score.FORTY.scorePart();
+            default -> "";
+        };
+    }
+
+    private String computeSameScore() {
+        return switch (scorePlayerOne) {
+            case 0 -> Score.LOVE.scorePart() + SEPARATOR + ALL;
+            case 1 -> Score.FIFTEEN.scorePart() + SEPARATOR + ALL;
+            case 2 -> Score.THIRTY.scorePart() + SEPARATOR + ALL;
+            default -> DEUCE;
+        };
     }
 }
