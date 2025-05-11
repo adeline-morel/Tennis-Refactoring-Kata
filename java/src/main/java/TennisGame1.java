@@ -1,6 +1,10 @@
 
 public class TennisGame1 implements TennisGame {
 
+    /*
+    * Je compte le reprendre ensuite car je pense pouvoir améliorer encore la séparation des responsabilités !
+    * Pour voir le code d'origine, c'est par ici : https://github.com/emilybache/Tennis-Refactoring-Kata/blob/main/java/src/main/java/TennisGame1.java
+     * */
     private static final String ADVANTAGE = "Advantage";
     private static final String WIN_FOR = "Win for";
     private static final String ALL = "All";
@@ -8,7 +12,6 @@ public class TennisGame1 implements TennisGame {
     private static final String SEPARATOR = "-";
     private static final int MINIMUM_WINNING_SCORE = 4;
     private static final int SCORE_DIFFERENCE_FOR_WIN = 2;
-    private static final String DEUCE = "Deuce";
 
     private final String playerOneName;
     private final String playerTwoName;
@@ -87,7 +90,7 @@ public class TennisGame1 implements TennisGame {
             case 0 -> Score.LOVE.scorePart() + SEPARATOR + ALL;
             case 1 -> Score.FIFTEEN.scorePart() + SEPARATOR + ALL;
             case 2 -> Score.THIRTY.scorePart() + SEPARATOR + ALL;
-            default -> DEUCE;
+            default -> Score.DEUCE.scorePart();
         };
     }
 }

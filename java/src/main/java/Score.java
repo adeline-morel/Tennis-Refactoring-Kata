@@ -2,7 +2,8 @@ public enum Score {
     LOVE("Love"),
     FIFTEEN("Fifteen"),
     THIRTY("Thirty"),
-    FORTY("Forty");
+    FORTY("Forty"),
+    DEUCE("Deuce");
 
     private final String scorePart;
 
