@@ -9,8 +9,8 @@ public class TennisGame2 implements TennisGame {
     private static final int MINIMUM_WINNING_SCORE = 4;
     private static final int SCORE_DIFFERENCE_FOR_WIN = 2;
 
-    private Player playerOne;
-    private Player playerTwo;
+    private final Player playerOne;
+    private final Player playerTwo;
     private final String playerOneName;
     private final String playerTwoName;
 
@@ -29,13 +29,13 @@ public class TennisGame2 implements TennisGame {
 
         if (Player.hasPoints(playerTwo.score(), 0)) {
             if (Player.hasPoints(playerOne.score(), 1)) {
-                return GameAnnouncer.announceFifteenLove();
+                return GameAnnouncer.announceGameState(Score.FIFTEEN, Score.LOVE);
             }
             if (Player.hasPoints(playerOne.score(), 2)) {
-                return GameAnnouncer.announceThirtyLove();
+                return GameAnnouncer.announceGameState(Score.THIRTY, Score.LOVE);
             }
             if (Player.hasPoints(playerOne.score(), 3)) {
-                return GameAnnouncer.announceFortyLove();
+                return GameAnnouncer.announceGameState(Score.FORTY, Score.LOVE);
             }
 
             return announceThatPlayerWins(playerOneName);
@@ -43,70 +43,82 @@ public class TennisGame2 implements TennisGame {
 
         if (Player.hasPoints(playerOne.score(), 0)) {
             if (Player.hasPoints(playerTwo.score(), 1)) {
-                return GameAnnouncer.announceLoveFifteen();
+                return GameAnnouncer.announceGameState(Score.LOVE, Score.FIFTEEN);
             }
             if (Player.hasPoints(playerTwo.score(), 2)) {
-                return GameAnnouncer.announceLoveThirty();
+                return GameAnnouncer.announceGameState(Score.LOVE, Score.THIRTY);
             }
             if (Player.hasPoints(playerTwo.score(), 3)) {
-                return GameAnnouncer.announceLoveForty();
+                return GameAnnouncer.announceGameState(Score.LOVE, Score.FORTY);
             }
 
             return announceThatPlayerWins(playerTwoName);
         }
-
-        String scorePartPlayerOne = Score.LOVE.scorePart();
-        String scorePartPlayerTwo = Score.LOVE.scorePart();
 
         if(isNotWinningScore()){
             if (playerOne.score() > playerTwo.score()) {
                 if (Player.hasPoints(playerOne.score(), 2)) {
-                    scorePartPlayerOne = Score.THIRTY.scorePart();
-                }
-                if (Player.hasPoints(playerOne.score(), 3)) {
-                    scorePartPlayerOne = Score.FORTY.scorePart();
+                    return GameAnnouncer.announceGameState(Score.THIRTY, Score.FIFTEEN);
                 }
                 if (Player.hasPoints(playerTwo.score(), 1)) {
-                    scorePartPlayerTwo = Score.FIFTEEN.scorePart();
+                    return GameAnnouncer.announceGameState(Score.FORTY, Score.FIFTEEN);
                 }
-                if (Player.hasPoints(playerTwo.score(), 2)) {
-                    scorePartPlayerTwo = Score.THIRTY.scorePart();
+                if (Player.hasPoints(playerOne.score(), 3)) {
+                    return GameAnnouncer.announceGameState(Score.FORTY, Score.THIRTY);
                 }
-
-                return scorePartPlayerOne + GameAnnouncer.SEPARATOR + scorePartPlayerTwo;
             }
 
             if (playerTwo.score() > playerOne.score()) {
-                if (Player.hasPoints(playerOne.score(), 1)) {
-                    scorePartPlayerOne = Score.FIFTEEN.scorePart();
-                }
                 if (Player.hasPoints(playerOne.score(), 2)) {
-                    scorePartPlayerOne = Score.THIRTY.scorePart();
+                    return GameAnnouncer.announceGameState(Score.THIRTY, Score.FORTY);
                 }
                 if (Player.hasPoints(playerTwo.score(), 2)) {
-                    scorePartPlayerTwo = Score.THIRTY.scorePart();
+                    return GameAnnouncer.announceGameState(Score.FIFTEEN, Score.THIRTY);
                 }
                 if (Player.hasPoints(playerTwo.score(), 3)) {
-                    scorePartPlayerTwo = Score.FORTY.scorePart();
+                    return GameAnnouncer.announceGameState(Score.FIFTEEN, Score.FORTY);
                 }
-
-                return scorePartPlayerOne + GameAnnouncer.SEPARATOR + scorePartPlayerTwo;
             }
         }
 
-        if (playerOne.score() >= MINIMUM_WINNING_SCORE && (playerOne.score() - playerTwo.score()) >= SCORE_DIFFERENCE_FOR_WIN) {
+        if (isPlayerOneWinning()) {
             return announceThatPlayerWins(playerOneName);
         }
-
-        if (playerTwo.score() >= MINIMUM_WINNING_SCORE && (playerTwo.score() - playerOne.score()) >= SCORE_DIFFERENCE_FOR_WIN) {
+        if (isPlayerTwoWinning()) {
             return announceThatPlayerWins(playerTwoName);
         }
 
-        String score;
+        if (playersHaveSameScore() && playerOne.score() < MINIMUM_WINNING_SCORE) {
+            if (Player.hasPoints(playerOne.score(), 1)) {
+                return Score.FIFTEEN.scorePart() + GameAnnouncer.SEPARATOR + GameAnnouncer.ALL;
+            } else if (playerOne.score() == 2) {
+                return Score.THIRTY.scorePart() + GameAnnouncer.SEPARATOR + GameAnnouncer.ALL;
+            }
+        }
 
-        score = computeSameScores();
+        if (isAdvantageForPlayerOne()) {
+            return GameAnnouncer.ADVANTAGE + GameAnnouncer.SPACE + playerOneName;
+        } else if (isAdvantageForPlayerTwo()) {
+            return GameAnnouncer.ADVANTAGE + GameAnnouncer.SPACE + playerTwoName;
+        }
 
-        return computeAdvantageScore(score);
+        return Score.DEUCE.scorePart();
+    }
+
+    private boolean isPlayerTwoWinning() {
+        return playerTwo.score() >= MINIMUM_WINNING_SCORE && (playerTwo.score() - playerOne.score()) >= SCORE_DIFFERENCE_FOR_WIN;
+    }
+
+    private boolean isPlayerOneWinning() {
+        return playerOne.score() >= MINIMUM_WINNING_SCORE && (playerOne.score() - playerTwo.score()) >= SCORE_DIFFERENCE_FOR_WIN;
+    }
+
+    private boolean isAdvantageForPlayerTwo() {
+        return playerTwo.score() > playerOne.score() && playerOne.score() >= 3;
+    }
+
+    private boolean isAdvantageForPlayerOne() {
+        return playerOne.score() > playerTwo.score() && playerTwo.score() >= 3;
     }
 
     private boolean isNotWinningScore() {
@@ -120,28 +132,6 @@ public class TennisGame2 implements TennisGame {
         else {
             giveOnePointToPlayerTwo();
         }
-    }
-
-    private String computeAdvantageScore(String score) {
-        if (playerOne.score() > playerTwo.score() && playerTwo.score() >= 3) {
-            return GameAnnouncer.ADVANTAGE + GameAnnouncer.SPACE + playerOneName;
-        } else if (playerTwo.score() > playerOne.score() && playerOne.score() >= 3) {
-            return GameAnnouncer.ADVANTAGE + GameAnnouncer.SPACE + playerTwoName;
-        }
-        return score;
-    }
-
-    private String computeSameScores() {
-        if (playersHaveSameScore() && playerOne.score() < MINIMUM_WINNING_SCORE) {
-            if (Player.hasPoints(playerOne.score(), 1)) {
-                return Score.FIFTEEN.scorePart() + GameAnnouncer.SEPARATOR + GameAnnouncer.ALL;
-            }
-            if (playerOne.score() == 2) {
-                return Score.THIRTY.scorePart() + GameAnnouncer.SEPARATOR + GameAnnouncer.ALL;
-            }
-        }
-
-        return Score.DEUCE.scorePart();
     }
 
     private boolean isLoveAll() {
