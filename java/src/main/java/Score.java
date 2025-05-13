@@ -14,4 +14,6 @@ public enum Score {
     public String scorePart() {
         return scorePart;
     }
+
+
 }

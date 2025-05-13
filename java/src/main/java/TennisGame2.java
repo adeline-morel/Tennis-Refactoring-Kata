@@ -26,68 +26,6 @@ public class TennisGame2 implements TennisGame {
         if (isLoveAll()){
             return GameAnnouncer.announceLoveAll();
         }
-
-        if (Player.hasPoints(playerTwo.score(), 0)) {
-            if (Player.hasPoints(playerOne.score(), 1)) {
-                return GameAnnouncer.announceGameState(Score.FIFTEEN, Score.LOVE);
-            }
-            if (Player.hasPoints(playerOne.score(), 2)) {
-                return GameAnnouncer.announceGameState(Score.THIRTY, Score.LOVE);
-            }
-            if (Player.hasPoints(playerOne.score(), 3)) {
-                return GameAnnouncer.announceGameState(Score.FORTY, Score.LOVE);
-            }
-
-            return announceThatPlayerWins(playerOneName);
-        }
-
-        if (Player.hasPoints(playerOne.score(), 0)) {
-            if (Player.hasPoints(playerTwo.score(), 1)) {
-                return GameAnnouncer.announceGameState(Score.LOVE, Score.FIFTEEN);
-            }
-            if (Player.hasPoints(playerTwo.score(), 2)) {
-                return GameAnnouncer.announceGameState(Score.LOVE, Score.THIRTY);
-            }
-            if (Player.hasPoints(playerTwo.score(), 3)) {
-                return GameAnnouncer.announceGameState(Score.LOVE, Score.FORTY);
-            }
-
-            return announceThatPlayerWins(playerTwoName);
-        }
-
-        if(isNotWinningScore()){
-            if (playerOne.score() > playerTwo.score()) {
-                if (Player.hasPoints(playerOne.score(), 2)) {
-                    return GameAnnouncer.announceGameState(Score.THIRTY, Score.FIFTEEN);
-                }
-                if (Player.hasPoints(playerTwo.score(), 1)) {
-                    return GameAnnouncer.announceGameState(Score.FORTY, Score.FIFTEEN);
-                }
-                if (Player.hasPoints(playerOne.score(), 3)) {
-                    return GameAnnouncer.announceGameState(Score.FORTY, Score.THIRTY);
-                }
-            }
-
-            if (playerTwo.score() > playerOne.score()) {
-                if (Player.hasPoints(playerOne.score(), 2)) {
-                    return GameAnnouncer.announceGameState(Score.THIRTY, Score.FORTY);
-                }
-                if (Player.hasPoints(playerTwo.score(), 2)) {
-                    return GameAnnouncer.announceGameState(Score.FIFTEEN, Score.THIRTY);
-                }
-                if (Player.hasPoints(playerTwo.score(), 3)) {
-                    return GameAnnouncer.announceGameState(Score.FIFTEEN, Score.FORTY);
-                }
-            }
-        }
-
-        if (isPlayerOneWinning()) {
-            return announceThatPlayerWins(playerOneName);
-        }
-        if (isPlayerTwoWinning()) {
-            return announceThatPlayerWins(playerTwoName);
-        }
-
         if (playersHaveSameScore() && playerOne.score() < MINIMUM_WINNING_SCORE) {
             if (Player.hasPoints(playerOne.score(), 1)) {
                 return Score.FIFTEEN.scorePart() + GameAnnouncer.SEPARATOR + GameAnnouncer.ALL;
@@ -102,7 +40,68 @@ public class TennisGame2 implements TennisGame {
             return GameAnnouncer.ADVANTAGE + GameAnnouncer.SPACE + playerTwoName;
         }
 
+        if (isPlayerOneWinning()) {
+            return GameAnnouncer.announceThatPlayerWins(playerOneName);
+        }
+        if (isPlayerTwoWinning()) {
+            return GameAnnouncer.announceThatPlayerWins(playerTwoName);
+        }
+
+        if (Player.hasPoints(playerTwo.score(), 0)) {
+            if (Player.hasPoints(playerOne.score(), 1)) {
+                return GameAnnouncer.announceGameState(Score.FIFTEEN, Score.LOVE);
+            }
+            if (Player.hasPoints(playerOne.score(), 2)) {
+                return GameAnnouncer.announceGameState(Score.THIRTY, Score.LOVE);
+            }
+            if (Player.hasPoints(playerOne.score(), 3)) {
+                return GameAnnouncer.announceGameState(Score.FORTY, Score.LOVE);
+            }
+        }
+        if (Player.hasPoints(playerOne.score(), 0)) {
+            if (Player.hasPoints(playerTwo.score(), 1)) {
+                return GameAnnouncer.announceGameState(Score.LOVE, Score.FIFTEEN);
+            }
+            if (Player.hasPoints(playerTwo.score(), 2)) {
+                return GameAnnouncer.announceGameState(Score.LOVE, Score.THIRTY);
+            }
+            if (Player.hasPoints(playerTwo.score(), 3)) {
+                return GameAnnouncer.announceGameState(Score.LOVE, Score.FORTY);
+            }
+        }
+        if (playerOne.score() > playerTwo.score()) {
+            if (Player.hasPoints(playerOne.score(), 2)) {
+                return GameAnnouncer.announceGameState(Score.THIRTY, Score.FIFTEEN);
+            }
+            if (Player.hasPoints(playerTwo.score(), 1)) {
+                return GameAnnouncer.announceGameState(Score.FORTY, Score.FIFTEEN);
+            }
+            if (Player.hasPoints(playerOne.score(), 3)) {
+                return GameAnnouncer.announceGameState(Score.FORTY, Score.THIRTY);
+            }
+        }
+        if (playerTwo.score() > playerOne.score()) {
+            if (Player.hasPoints(playerOne.score(), 2)) {
+                return GameAnnouncer.announceGameState(Score.THIRTY, Score.FORTY);
+            }
+            if (Player.hasPoints(playerTwo.score(), 2)) {
+                return GameAnnouncer.announceGameState(Score.FIFTEEN, Score.THIRTY);
+            }
+            if (Player.hasPoints(playerTwo.score(), 3)) {
+                return GameAnnouncer.announceGameState(Score.FIFTEEN, Score.FORTY);
+            }
+        }
+
         return Score.DEUCE.scorePart();
+    }
+
+    public void wonPoint(String player) {
+        if (player.equals(playerOneName)) {
+            giveOnePointToPlayerOne();
+        }
+        else {
+            giveOnePointToPlayerTwo();
+        }
     }
 
     private boolean isPlayerTwoWinning() {
@@ -125,21 +124,8 @@ public class TennisGame2 implements TennisGame {
         return playerOne.score() < MINIMUM_WINNING_SCORE && playerTwo.score() < MINIMUM_WINNING_SCORE;
     }
 
-    public void wonPoint(String player) {
-        if (player.equals(playerOneName)) {
-            giveOnePointToPlayerOne();
-        }
-        else {
-            giveOnePointToPlayerTwo();
-        }
-    }
-
     private boolean isLoveAll() {
         return playerOne.score() == 0 && playersHaveSameScore();
-    }
-
-    private String announceThatPlayerWins(String playerName) {
-        return GameAnnouncer.WIN_FOR + GameAnnouncer.SPACE + playerName;
     }
 
     private boolean playersHaveSameScore() {
