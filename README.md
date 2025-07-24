@@ -1,3 +1,10 @@
+[Le repo d'origine pour ce kata](https://github.com/emilybache/Tennis-Refactoring-Kata)_
+
+Katas en cours de mon côté, to be continued...
+
+-------------------------------
+README d'origine :
+
 _Support this and all my katas via [Patreon](https://www.patreon.com/EmilyBache)_
 
 # Tennis Refactoring Kata
